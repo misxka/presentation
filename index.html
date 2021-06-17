@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>JWT (JSON Web Tokens)</title>
+
+		<meta name="description" content="JWT (JSON Web Tokens)">
+		<meta name="author" content="Mikhail Viaryha">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+		<link rel="stylesheet" href="dist/theme/black.css" id="theme">
+
+		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<div class="slides">
+				<section>
+					<a href="https://jwt.io">
+						<img src="https://jwt.io/img/pic_logo.svg" alt="jwt logo" style="height: 180px; margin: 0 auto 4rem auto; background: transparent;" class="demo-logo">
+					</a>
+					<h3>JWT (JSON Web Tokens)</h3>
+
+          <aside class="notes">
+            Today I will tell you about JSON Web Tokens. 
+            JWT is the way we can manage users' access in our applications.
+            But before we start with JWT itself, let's find out the differences between two things: Authentication & Authorization. 
+          </aside>
+				</section>
+
+        <section>
+          <h2>Authentication & Authorization</h2>
+          <img height="450" src="https://nordicapis.com/wp-content/uploads/What-is-the-Difference-Between-Authorization-and-Authentication-.png">
+
+          <aside class="notes">
+						Authentication and authorization might sound similar, but they are distinct security processes.
+						Authentication confirms that users are who they say they are. Authorization gives those users permission to access a resource.
+						Well, let's talk about what is authentication indeed.
+						Authentication is the process of identifying users and validating who they claim to be.
+						One of the most common and obvious factors to authenticate identity is a password.
+						If the user name matches the password credential, it means the identity is valid, and the system grants access to the user.
+						Authorization, on the other hand, happens after a user’s identity has been successfully authenticated.
+						It is about offering full or partial access rights to resources to get the job done.
+						It means every user should have the right to access some information depending on the role.
+          </aside>
+        </section>
+
+				<section>
+          <h2>What is JSON Web Token?</h2>
+          <p>
+            JSON web token (JWT), pronounced "jot", is an open standard (RFC 7519) that defines a way for securely transmitting information between parties as a JSON object.
+          </p>
+
+          <aside class="notes">
+						JSON web token (JWT), pronounced "jot", is an open standard (RFC 7519) that defines a compact and self-contained way for securely transmitting information between parties as a JSON object.
+						It's important to note, JWT is a standard, meaning that all JWTs are tokens, but not all tokens are JWTs.
+					</aside>
+				</section>
+
+				<section>
+					<section>
+						<h2>What is the structure of JWT?</h2>
+						<p>JSON Web Token consists of 3 parts seprated by dots:</p>
+						<ul>
+              <li>Header</li>
+              <li>Payload</li>
+              <li>Signature</li>
+            </ul>
+					</section>
+					<section data-auto-animate >
+						<h2>Header</h2>
+						<p>The header typically consists of two parts: the type of the token, which is JWT, and the signing algorithm.</p>
+            
+            <pre class="fragment fade-up" data-id="code-animation">
+              <code class="hljs" data-trim data-line-numbers>
+                {
+                  "alg": "HS256",
+                  "typ": "JWT"
+                }
+              </code>
+            </pre>
+
+            <aside class="notes">
+              The header typically consists of two parts: the type of the token, which is JWT, and the signing algorithm.
+              The most frequently used algorithm, as shown below, is HS256.
+              This JSON is Base64Url encoded to form the first part of the JWT.
+            </aside>
+					</section>
+					<section data-auto-animate>
+						<h2>Payload</h2>
+						<p>The second part of the token is the payload, which contains the claims that represent additional data.</p>
+
+            <pre class="fragment fade-up" data-id="code-animation">
+              <code class="hljs" data-trim data-line-numbers>
+                {
+                  "sub": "1234567890",
+                  "name": "John Doe",
+                  "iat": 1457454340,
+                  "exp": 1457450740,
+                  "admin": false
+                }
+              </code>
+            </pre>
+
+            <p class="r-fit-text fragment fade-right" style="color: #FF2B2B">!Notice that this information is readable by anyone. Do not put secret information in the payload or header elements of a JWT unless it is encrypted</p>
+
+            <aside class="notes">
+              The second part of the token is the payload, which contains the claims. Claims are statements about an entity (typically, the user) and additional data.
+              "iat" and "exp" fields represent the number of seconds since January 1, 1970 (UNIX Epoch) and stand for "Issued At" and "Expires In" respectively.
+              The payload is then Base64Url encoded to form the second part of the JSON Web Token.
+            </aside>
+					</section>
+          <section data-auto-animate>
+						<h2>Signature</h2>
+						<p>To create the signature part you have to take the encoded header, the encoded payload, a secret, the algorithm specified in the header, and sign that.</p>
+					
+            <img src="assets/signature.png">
+
+            <aside class="notes">
+              To create the signature part you have to take the encoded header, the encoded payload, a secret, the algorithm specified in the header, and sign that.
+              The signature is used to verify the message wasn't changed along the way, and, in the case of tokens signed with a private key, it can also verify that the sender of the JWT is who it says it is.
+            </aside>
+          </section>
+				</section>
+
+        <section>
+          <section data-auto-animate>
+            <h2>Encoded Token</h2>
+            <p>Finally, token should look like this:</p>
+
+            <img src="./assets/token.png">
+
+            <p class="r-fit-text fragment fade-right">In case you want to try creating your own JWT token you can visit <a href="https://jwt.io/#debugger-io">jwt.io debugger</a>.</p>
+
+            <aside class="notes">
+              Finally, token should look like this. As we can see, there are 3 parts separated by dots.
+              In case you want to try creating your own JWT token you can visit jwt.io debugger.
+            </aside>
+          </section>
+        </section>
+
+				<section>
+          <section data-auto-animate>
+            <h2>Access Token</h2>
+            <p class="r-fit-text">
+							Access token is used to get access to the resource directly.
+							They usually have short expiration time.
+						</p>
+
+            <img height="450px" src="./assets/access-token.png">
+
+            <aside class="notes">
+              There are 2 types of tokens: access token and refresh token.
+							Access tokens carry the necessary information to access a resource directly.
+							In other words, when a client passes an access token to a server managing a resource, that server can use the information contained in the token to decide whether the client is authorized or not.
+							Access tokens usually have an expiration date and are short-lived.
+            </aside>
+          </section>
+					<section data-auto-animate>
+            <h2>Refresh Token</h2>
+            <p class="r-fit-text">
+							Refresh token provides the opportunity to get a new access token.
+							It is used to create new access tokens after old ones have expired, or getting access to a new resource for the first time.
+						</p>
+
+            <img height="360px" src="./assets/refresh-token.png">
+
+            <p class="r-fit-text fragment fade-right">
+							Access token &#60;=30 minutes, refresh token - up to several months. 
+						</p>
+
+            <aside class="notes">
+							Refresh tokens carry the information necessary to get a new access token.
+							In other words, whenever an access token is required to access a specific resource, a client may use a refresh token to get a new access token issued by the authentication server.
+							Common use cases include getting new access tokens after old ones have expired, or getting access to a new resource for the first time.
+							Refresh tokens can also expire but are rather long-lived.
+							For example, lifetime of an access token is usually &#60;= 30 minutes, refresh token may live up to several months.
+							Refresh tokens are usually subject to strict storage requirements to ensure they are not leaked.
+							They can also be blacklisted by the authorization server.
+						</aside>
+          </section>
+					<section data-auto-animate>
+            <h2>How to store tokens?</h2>
+						
+						<ul>
+							<li class="fragment fade-right">Access tokens should be stored in application memory.</li>
+							<li class="fragment fade-right">Refresh tokens should however be stored in cookies with an httpOnly flag that prevents client-side scripts from accessing the data it contains.</li>
+						</ul>
+						
+						<br>
+
+						<p class="r-fit-text fragment fade-right">Here's an example how to set httpOnly cookie using Express framework in Node.js.</p>
+            <pre class="fragment fade-up" data-id="code-animation">
+              <code class="hljs fragment fade-up" data-trim data-line-numbers>
+                res.cookie('refreshToken', refreshToken, { httpOnly: true });
+              </code>
+            </pre>
+
+            <aside class="notes">
+
+						</aside>
+          </section>
+        </section>
+
+				<section>
+					<section data-auto-animate>
+						<h2>Login process</h2>
+
+						<ol class="r-fit-text">
+							<li class="fragment fade-right">User logs in the application passing login/password & browser's fingerprint.</li>
+							<li class="fragment fade-right">Server verifies login/password.</li>
+							<li class="fragment fade-right">In case of success server creates session and stores it in the database.</li>
+							<li class="fragment fade-right">Creates access token.</li>
+							<li class="fragment fade-right">Server sends both access and refresh tokens to the client.</li>
+							<li class="fragment fade-right">Client saves tokens in appropriate way: access token - in app memory, refresh token - in cookies.</li>
+						</ol>
+
+						<aside class="notes">
+							<ol>
+								<li>User logs in the application passing login/password & browser's fingerprint.</li>
+								<li>Server verifies login/password.</li>
+								<li>In case of success server creates session and stores it in the database.</li>
+								<li>Creates access token.</li>
+								<li>Server sends both access and refresh tokens to the client.</li>
+								<li>Client saves tokens in appropriate way: access token - in app memory, refresh token - in cookies.</li>
+							</ol>
+						</aside>
+					</section>
+					<section data-auto-animate>
+						<h2>Refresh process</h2>
+
+						<ol class="r-fit-text">
+							<li class="fragment fade-right">Client checks whether lifetime of an access token expired or not. </li>
+							<li class="fragment fade-right">When lifetime is over client makes a request to refresh the token passing such data as browser's fingerprint and refresh token.</li>
+							<li class="fragment fade-right">Server gets the refresh session record with the help of refresh token.</li>
+							<li class="fragment fade-right">Server saves current refresh session to the variable and deletes it from the database table.</li>
+							<li class="fragment fade-right">Server checks current session for lifetime and fingerprint.</li>
+							<li class="fragment fade-right">If it fails throws an error (like this: TOKEN_EXPIRED/INVALID_REFRESH_SESSION)</li>
+							<li class="fragment fade-right">In case of success server creates new refresh-session and saves it to the database.</li>
+							<li class="fragment fade-right">Server creates access token.</li>
+							<li class="fragment fade-right">Server sends access and refresh tokens to the client.</li>
+						</ol>
+
+						<br>
+
+						<p class="r-fit-text fragment fade-right" style="color: #FF2B2B">Important to note: when refreshing access token both access and refresh token should be updated.</p>
+
+						<aside class="notes">
+							<ol>
+								<li>Client checks whether lifetime of an access token expired or not. </li>
+								<li>When lifetime is over client makes a request to refresh the token passing such data as browser's fingerprint and refresh token.</li>
+								<li>Server gets the refresh session record with the help of refresh token.</li>
+								<li>Server saves current refresh session to the variable and deletes it from the database table.</li>
+								<li>Server checks current session for lifetime and fingerprint.</li>
+								<li>If it fails throws an error (like this: TOKEN_EXPIRED/INVALID_REFRESH_SESSION)</li>
+								<li>In case of success server creates new refresh-session and saves it to the database.</li>
+								<li>Server creates access token.</li>
+								<li>Server sends access and refresh tokens to the client.</li>
+							</ol>
+
+							<p>Important to note: when refreshing access token both access and refresh token should be updated.</p>
+						</aside>
+					</section>
+				</section>
+
+				<section data-auto-animate>
+					<h2>What happens when tokens got stolen?</h2>
+
+					<ol class="r-fit-text">
+						<li class="fragment fade-right">A hacker uses access token.</li>
+						<li class="fragment fade-right">After a period of time this token's lifetime expired.</li>
+						<li class="fragment fade-right">The hacker sends refresh token and fingerprint.</li>
+						<li class="fragment fade-right">Server cannot find hacker's fingerprint in refresh session and deletes this session from DB.</li>
+						<li class="fragment fade-right">Server redirects user (hacker in our case) to login page, but hacker has no login or password.</li>
+						<li class="fragment fade-right">In such situation real user will be also redirected, but there's no problem, because user knows both login and password.</li>
+					</ol>
+
+					<aside class="notes">
+						<ol>
+							<li>A hacker uses access token.</li>
+							<li>After a period of time this token's lifetime expired.</li>
+							<li>The hacker sends refresh token and fingerprint.</li>
+							<li>Server cannot find hacker's fingerprint in refresh session and deletes this session from DB.</li>
+							<li>Server redirects user (hacker in our case) to login page, but hacker has no login or password.</li>
+							<li>In such situation real user will be also redirected, but there's no problem, because user knows both login and password.</li>
+						</ol>
+					</aside>
+				</section>
+
+				<section>
+					<section data-auto-animate>
+						<h2>JWT vs Cookie Sessions</h2>
+
+						<p class="r-fit-text">In Cookie Sessions the server is responsible for the authentication and the client does not know what happens at the server side after sending a request.</p>
+
+						<img height="400px" src="./assets/session-auth.png">
+
+						<aside class="notes">
+							Before the emergence of JSON Web Tokens, we predominantly used session-based authentication.
+							In this type of authentication method, the server is responsible for the authentication and the client does not know what happens at the server side after sending a request.
+							And this is probably the main problem of Cookie Sessions.
+						</aside>
+					</section>
+					<section data-auto-animate>
+						<p>Advantages of JWT</p>
+						<ul class="r-fit-text">
+							<li class="fragment fade-right">There's no need to ask for information in DB on every request.</li>
+							<li class="fragment fade-right">Native mobile support of JWT</li>
+							<li class="fragment fade-right">Ability to work with microservices.</li>
+						</ul>
+
+						<p class="fragment">Disadvantages of JWT</p>
+						<ul class="r-fit-text">
+							<li class="fragment fade-right">Token can be easily decoded.</li>
+							<li class="fragment fade-right">Token is pretty big and works slower than traditional session.</li>
+						</ul>
+
+						<aside class="notes">
+							In case there is a large amount of users accessing our app at once, we will face some server performance issues.
+							Nowadays apps should work fine both in browsers and smartphones. And it's more convenient to work with JWTs when you develop mobile apps.
+							It's worth noting that in so widely used today microservice architecture using JWTs is the only way to manage access in every service independently.
+							When using sessions we should always send request to authentication server which is impossible in microservices.
+						
+							The main disadvantage of using JSON Web Tokens is the fact that data passed in its header and payload can be easily decoded.
+							This means you should never set any sensitive data, such as credentials, password, etc., in token.
+							In addition, token contains a large amount of data and works slower in comparison with session.
+						</aside>
+					</section>
+				</section>
+
+				<section>
+					<h2>Useful resources</h2>
+					<ul>
+						<li><a href="https://jwt.io">JSON Web Tokens - jwt.io</a></li>
+						<li><a href="https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/">Refresh Tokens: When to Use Them and How They Interact with JWTs</a></li>
+						<li><a href="https://scotch.io/tutorials/authenticate-a-node-es6-api-with-json-web-tokens">Authenticate a Node ES6 API with JSON Web Tokens</a></li>
+						<li><a href="https://egghead.io/courses/json-web-token-jwt-authentication-with-node-js-and-auth0">JSON Web Token (JWT) Authentication with Node.js and Auth0</a></li>
+					</ul>
+				</section>
+
+				<section style="text-align: left;">
+					<h1>THE END</h1>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/zoom/zoom.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/search/search.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script>
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				center: true,
+				hash: true,
+
+				plugins: [ RevealZoom, RevealNotes, RevealSearch, RevealMarkdown, RevealHighlight ]
+			});
+
+		</script>
+
+	</body>
+</html>
