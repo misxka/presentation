@@ -208,7 +208,10 @@
             </pre>
 
             <aside class="notes">
-
+							<ul>
+								<li>Access tokens should be stored in application memory.</li>
+								<li>Refresh tokens should however be stored in cookies with an httpOnly flag that prevents client-side scripts from accessing the data it contains.</liclass=>
+							</ul>
 						</aside>
           </section>
         </section>
