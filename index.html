@@ -44,15 +44,9 @@
           <img height="450" src="https://nordicapis.com/wp-content/uploads/What-is-the-Difference-Between-Authorization-and-Authentication-.png">
 
           <aside class="notes">
-						Authentication and authorization might sound similar, but they are distinct security processes.
-						Authentication confirms that users are who they say they are. Authorization gives those users permission to access a resource.
-						Well, let's talk about what is authentication indeed.
 						Authentication is the process of identifying users and validating who they claim to be.
-						One of the most common and obvious factors to authenticate identity is a password.
-						If the user name matches the password credential, it means the identity is valid, and the system grants access to the user.
-						Authorization, on the other hand, happens after a user’s identity has been successfully authenticated.
+						Authorization happens after a user’s identity has been successfully authenticated.
 						It is about offering full or partial access rights to resources to get the job done.
-						It means every user should have the right to access some information depending on the role.
           </aside>
         </section>
 
@@ -63,8 +57,7 @@
           </p>
 
           <aside class="notes">
-						JSON web token (JWT), pronounced "jot", is an open standard (RFC 7519) that defines a compact and self-contained way for securely transmitting information between parties as a JSON object.
-						It's important to note, JWT is a standard, meaning that all JWTs are tokens, but not all tokens are JWTs.
+						JSON web token is an open standard that defines a compact and self-contained way for securely transmitting information between parties as a JSON object.
 					</aside>
 				</section>
 
@@ -93,8 +86,6 @@
 
             <aside class="notes">
               The header typically consists of two parts: the type of the token, which is JWT, and the signing algorithm.
-              The most frequently used algorithm, as shown below, is HS256.
-              This JSON is Base64Url encoded to form the first part of the JWT.
             </aside>
 					</section>
 					<section data-auto-animate>
@@ -117,8 +108,7 @@
 
             <aside class="notes">
               The second part of the token is the payload, which contains the claims. Claims are statements about an entity (typically, the user) and additional data.
-              "iat" and "exp" fields represent the number of seconds since January 1, 1970 (UNIX Epoch) and stand for "Issued At" and "Expires In" respectively.
-              The payload is then Base64Url encoded to form the second part of the JSON Web Token.
+              The header and the payload are then encoded to form the first and the second parts of the JSON Web Token respectively.
             </aside>
 					</section>
           <section data-auto-animate>
@@ -145,7 +135,7 @@
 
             <aside class="notes">
               Finally, token should look like this. As we can see, there are 3 parts separated by dots.
-              In case you want to try creating your own JWT token you can visit jwt.io debugger.
+              In case you want to try creating your own JWT token you can use the following link.
             </aside>
           </section>
         </section>
@@ -163,8 +153,6 @@
             <aside class="notes">
               There are 2 types of tokens: access token and refresh token.
 							Access tokens carry the necessary information to access a resource directly.
-							In other words, when a client passes an access token to a server managing a resource, that server can use the information contained in the token to decide whether the client is authorized or not.
-							Access tokens usually have an expiration date and are short-lived.
             </aside>
           </section>
 					<section data-auto-animate>
@@ -182,10 +170,7 @@
 
             <aside class="notes">
 							Refresh tokens carry the information necessary to get a new access token.
-							In other words, whenever an access token is required to access a specific resource, a client may use a refresh token to get a new access token issued by the authentication server.
 							Common use cases include getting new access tokens after old ones have expired, or getting access to a new resource for the first time.
-							Refresh tokens can also expire but are rather long-lived.
-							For example, lifetime of an access token is usually &#60;= 30 minutes, refresh token may live up to several months.
 							Refresh tokens are usually subject to strict storage requirements to ensure they are not leaked.
 							They can also be blacklisted by the authorization server.
 						</aside>
@@ -208,10 +193,7 @@
             </pre>
 
             <aside class="notes">
-							<ul>
-								<li>Access tokens should be stored in application memory.</li>
-								<li>Refresh tokens should however be stored in cookies with an httpOnly flag that prevents client-side scripts from accessing the data it contains.</liclass=>
-							</ul>
+							Different ways to store tokens.
 						</aside>
           </section>
         </section>
@@ -230,14 +212,7 @@
 						</ol>
 
 						<aside class="notes">
-							<ol>
-								<li>User logs in the application passing login/password & browser's fingerprint.</li>
-								<li>Server verifies login/password.</li>
-								<li>In case of success server creates session and stores it in the database.</li>
-								<li>Creates access token.</li>
-								<li>Server sends both access and refresh tokens to the client.</li>
-								<li>Client saves tokens in appropriate way: access token - in app memory, refresh token - in cookies.</li>
-							</ol>
+							How does the login process look like?
 						</aside>
 					</section>
 					<section data-auto-animate>
@@ -257,21 +232,9 @@
 
 						<br>
 
-						<p class="r-fit-text fragment fade-right" style="color: #FF2B2B">Important to note: when refreshing access token both access and refresh token should be updated.</p>
+						<p class="r-fit-text fragment fade-right" style="color: #FF2B2B">Important to note: when refreshing access token both access and refresh tokens should be updated.</p>
 
 						<aside class="notes">
-							<ol>
-								<li>Client checks whether lifetime of an access token expired or not. </li>
-								<li>When lifetime is over client makes a request to refresh the token passing such data as browser's fingerprint and refresh token.</li>
-								<li>Server gets the refresh session record with the help of refresh token.</li>
-								<li>Server saves current refresh session to the variable and deletes it from the database table.</li>
-								<li>Server checks current session for lifetime and fingerprint.</li>
-								<li>If it fails throws an error (like this: TOKEN_EXPIRED/INVALID_REFRESH_SESSION)</li>
-								<li>In case of success server creates new refresh-session and saves it to the database.</li>
-								<li>Server creates access token.</li>
-								<li>Server sends access and refresh tokens to the client.</li>
-							</ol>
-
 							<p>Important to note: when refreshing access token both access and refresh token should be updated.</p>
 						</aside>
 					</section>
@@ -290,14 +253,7 @@
 					</ol>
 
 					<aside class="notes">
-						<ol>
-							<li>A hacker uses access token.</li>
-							<li>After a period of time this token's lifetime expired.</li>
-							<li>The hacker sends refresh token and fingerprint.</li>
-							<li>Server cannot find hacker's fingerprint in refresh session and deletes this session from DB.</li>
-							<li>Server redirects user (hacker in our case) to login page, but hacker has no login or password.</li>
-							<li>In such situation real user will be also redirected, but there's no problem, because user knows both login and password.</li>
-						</ol>
+						Sometimes our tokens can be stolen.
 					</aside>
 				</section>
 
@@ -312,7 +268,6 @@
 						<aside class="notes">
 							Before the emergence of JSON Web Tokens, we predominantly used session-based authentication.
 							In this type of authentication method, the server is responsible for the authentication and the client does not know what happens at the server side after sending a request.
-							And this is probably the main problem of Cookie Sessions.
 						</aside>
 					</section>
 					<section data-auto-animate>
@@ -330,14 +285,7 @@
 						</ul>
 
 						<aside class="notes">
-							In case there is a large amount of users accessing our app at once, we will face some server performance issues.
-							Nowadays apps should work fine both in browsers and smartphones. And it's more convenient to work with JWTs when you develop mobile apps.
-							It's worth noting that in so widely used today microservice architecture using JWTs is the only way to manage access in every service independently.
-							When using sessions we should always send request to authentication server which is impossible in microservices.
-						
-							The main disadvantage of using JSON Web Tokens is the fact that data passed in its header and payload can be easily decoded.
-							This means you should never set any sensitive data, such as credentials, password, etc., in token.
-							In addition, token contains a large amount of data and works slower in comparison with session.
+							Pros & Cons of JWTs.
 						</aside>
 					</section>
 				</section>
